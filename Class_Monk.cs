@@ -36,24 +36,28 @@ namespace ValheimLegends
         private static List<int> kicklist;
 
         public static bool PlayerIsUnarmed
+{
+    get
+    {
+        Player p = Player.m_localPlayer;
+        if (p.GetCurrentWeapon() != null)
         {
-            get
+            ItemDrop.ItemData leftItem = Traverse.Create(p).Field("m_leftItem").GetValue<ItemDrop.ItemData>();
+            ItemDrop.ItemData rightItem = Traverse.Create(p).Field("m_rightItem").GetValue<ItemDrop.ItemData>();
+            ItemDrop.ItemData.SharedData leftItemData = leftItem?.m_shared;
+            ItemDrop.ItemData.SharedData rightItemData = rightItem?.m_shared;
+
+            // Check if both hands are unarmed or equipped with fists
+            if ((leftItemData != null && (leftItemData.m_name.ToLower() == "unarmed" || leftItemData.m_attachOverride == ItemDrop.ItemData.ItemType.Hands)) &&
+                (rightItemData != null && (rightItemData.m_name.ToLower() == "unarmed" || rightItemData.m_attachOverride == ItemDrop.ItemData.ItemType.Hands)))
             {
-                Player p = Player.m_localPlayer;
-                if (p.GetCurrentWeapon() != null)
-                {
-                    
-                    ItemDrop.ItemData shield = Traverse.Create(root: p).Field(name: "m_leftItem").GetValue<ItemDrop.ItemData>();
-                    ItemDrop.ItemData.SharedData sid = p.GetCurrentWeapon().m_shared;
-                    if (sid != null && ((sid.m_name.ToLower() == "unarmed") || sid.m_attachOverride == ItemDrop.ItemData.ItemType.Hands) && shield == null)
-                    {
-                        //ZLog.Log("unarmed attack");
-                        return true;
-                    }
-                }
-                return false;
+                // Player is unarmed or equipped with fists
+                return true;
             }
         }
+        return false;
+    }
+}
 
         public static void Impact_Effect(Player player, float altitude)
         {
