@@ -255,6 +255,7 @@ namespace ValheimLegends
             }            
             else if(VL_Utility.Ability2_Input_Down)
             {
+                //TODO Fix Fade behaviours
                 if (!player.GetSEMan().HaveStatusEffect("SE_VL_Ability2_CD".GetStableHashCode()))
                 {
                     if (player.GetStamina() >= VL_Utility.GetFadeCost)
